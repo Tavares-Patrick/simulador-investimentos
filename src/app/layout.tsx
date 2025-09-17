@@ -1,10 +1,10 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import StyledComponentsRegistry from "@/lib/registry";
+import "../styles/global.css"; // ✅ agora aponta pro arquivo correto
 
 export const metadata: Metadata = {
-  title: "Analise de Investimento",
-  description: "Aplicação com styled-components no App Router",
+  title: "Simulador de Investimentos",
+  description: "Calcule e visualize seus rendimentos em diferentes aplicações",
 };
 
 export default function RootLayout({

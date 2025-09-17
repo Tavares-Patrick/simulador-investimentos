@@ -1,0 +1,41 @@
+.card {
+  background: rgba(26, 29, 46, 0.85); /* Transparente para mostrar o fundo */
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 25px rgba(79, 142, 247, 0.3);
+}
+
+.card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+  color: #4f8ef7;
+  text-shadow: 0 0 2px #4f8ef7; /* Glow futurista */
+}
+
+.card p {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+.cardFooter {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon {
+  color: #4f8ef7;
+  font-size: 1.4rem;
+}
