@@ -1,0 +1,40 @@
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+  border-radius: 16px;
+  background: rgba(26, 29, 46, 0.85);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+  max-width: 500px;
+  margin: 0 auto;
+  color: #eee;
+}
+
+.title {
+  color: #4f8ef7;
+  text-align: center;
+  text-shadow: 0 0 8px #4f8ef7;
+}
+
+.inputLabel {
+  color: #ccc !important;
+}
+
+.inputField {
+  color: #eee !important;
+}
+
+.submitButton {
+  background: #4f8ef7;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  background: #6aa5ff;
+  box-shadow: 0 0 20px #4f8ef7;
+}

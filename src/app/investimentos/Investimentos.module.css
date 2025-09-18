@@ -1,0 +1,27 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('/images/dark-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.overlay {
+  background: rgba(26, 29, 46, 0.85);
+  padding: 40px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  color: #eee;
+}
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #4f8ef7;
+  text-shadow: 0 0 10px #4f8ef7;
+}
