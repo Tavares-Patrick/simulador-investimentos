@@ -12,7 +12,7 @@ export default function Home() {
         <Card
           title="Simulação"
           description="Calcule o rendimento de aplicações financeiras"
-          href="/simulacao"
+          href="/investimentos"
         />
         <Card
           title="Sobre"
