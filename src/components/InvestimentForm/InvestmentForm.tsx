@@ -15,6 +15,9 @@ export interface InvestmentInput {
   interestSource: "manual" | "CDI" | "SELIC";
   interestRate: number;       // valor informado manualmente
   interestRateType: "month" | "year";
+  indexerPercent?: number;    // percentual sobre CDI ou SELIC
+  investmentType: "CDB" | "LCI" | "LCA" | "Tesouro" | "Outro";
+  investmentRate?: number;    // rendimento anual do produto
   applyIR: boolean;
   irRate?: number;            // alíquota de IR
 }
@@ -26,7 +29,10 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     duration: 12,
     interestSource: "manual",
     interestRate: 0,
-    interestRateType: "month",
+    interestRateType: "year",
+    indexerPercent: 100,
+    investmentType: "CDB",
+    investmentRate: 0,
     applyIR: false,
     irRate: 0,
   });
@@ -44,6 +50,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     <form className={styles.form} onSubmit={handleSubmit}>
       <h2 className={styles.title}>Simulador de Investimentos</h2>
 
+      {/* Valor inicial */}
       <TextField
         label="Valor Inicial (R$)"
         type="number"
@@ -53,6 +60,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         margin="normal"
       />
 
+      {/* Aporte mensal */}
       <TextField
         label="Aporte Mensal (R$)"
         type="number"
@@ -62,6 +70,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         margin="normal"
       />
 
+      {/* Tempo */}
       <TextField
         label="Tempo (meses ou anos)"
         type="number"
@@ -76,7 +85,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         select
         label="Fonte da taxa de juros"
         value={form.interestSource}
-        onChange={(e) => handleChange("interestSource", e.target.value)}
+        onChange={(e) => handleChange("interestSource", e.target.value as "manual" | "CDI" | "SELIC")}
         fullWidth
         margin="normal"
       >
@@ -85,30 +94,91 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         <MenuItem value="SELIC">SELIC</MenuItem>
       </TextField>
 
-      {/* Sempre pedir o valor da taxa */}
+      {/* Taxa manual */}
+{form.interestSource === "manual" && (
+  <>
+    <TextField
+      label="Informe a taxa (%)"
+      type="number"
+      value={form.interestRate}
+      onChange={(e) => handleChange("interestRate", parseFloat(e.target.value))}
+      fullWidth
+      margin="normal"
+    />
+
+    <FormControlLabel
+      control={
+        <Switch
+          checked={form.interestRateType === "year"}
+          onChange={(e) =>
+            handleChange("interestRateType", e.target.checked ? "year" : "month")
+          }
+        />
+      }
+      label="Taxa ao ano"
+    />
+  </>
+)}
+
+{/* Percentual sobre CDI/SELIC */}
+{(form.interestSource === "CDI" || form.interestSource === "SELIC") && (
+  <>
+    <TextField
+      label={`Percentual sobre ${form.interestSource} (%)`}
+      type="number"
+      value={form.indexerPercent}
+      onChange={(e) => handleChange("indexerPercent", parseFloat(e.target.value))}
+      fullWidth
+      margin="normal"
+    />
+
+    {/* Sempre forçar ano */}
+    <p style={{ color: "#ccc", fontSize: "0.9rem" }}>
+      Obs: {form.interestSource} é sempre considerado ao ano.
+    </p>
+  </>
+)}
+
+
+      {/* Percentual sobre CDI/SELIC */}
+      {(form.interestSource === "CDI" || form.interestSource === "SELIC") && (
+        <TextField
+          label={`Percentual sobre ${form.interestSource} (%)`}
+          type="number"
+          value={form.indexerPercent}
+          onChange={(e) => handleChange("indexerPercent", parseFloat(e.target.value))}
+          fullWidth
+          margin="normal"
+        />
+      )}
+
+      {/* Tipo de investimento */}
       <TextField
-        label={`Informe a taxa (${form.interestSource}) % ao ano`}
+        select
+        label="Tipo de investimento"
+        value={form.investmentType}
+        onChange={(e) => handleChange("investmentType", e.target.value as InvestmentInput["investmentType"])}
+        fullWidth
+        margin="normal"
+      >
+        <MenuItem value="CDB">CDB</MenuItem>
+        <MenuItem value="LCI">LCI</MenuItem>
+        <MenuItem value="LCA">LCA</MenuItem>
+        <MenuItem value="Tesouro">Tesouro</MenuItem>
+        <MenuItem value="Outro">Outro</MenuItem>
+      </TextField>
+
+      {/* Rendimento anual do produto */}
+      <TextField
+        label="Rendimento anual do produto (%)"
         type="number"
-        value={form.interestRate}
-        onChange={(e) => handleChange("interestRate", parseFloat(e.target.value))}
+        value={form.investmentRate}
+        onChange={(e) => handleChange("investmentRate", parseFloat(e.target.value))}
         fullWidth
         margin="normal"
       />
 
-      {/* Switch de juros mensal/anual */}
-      <FormControlLabel
-        control={
-          <Switch
-            checked={form.interestRateType === "year"}
-            onChange={(e) =>
-              handleChange("interestRateType", e.target.checked ? "year" : "month")
-            }
-          />
-        }
-        label="Juros ao ano"
-      />
-
-      {/* Switch de IR */}
+      {/* Imposto de Renda */}
       <FormControlLabel
         control={
           <Switch

@@ -8,9 +8,10 @@ interface FormData {
   valorInicial: number;
   aporteMensal: number;
   tempo: number;
-  taxaJuros: number;
+  taxaJuros: number;     // taxa fixa ou valor de percentual do indexador
   tipo: string;
   ir: boolean;
+  aliquotaIR?: number;   // só aparece se ir === true
   indexador: string;
   prefixo: string;
 }
@@ -27,6 +28,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
     taxaJuros: 0,
     tipo: "CDB",
     ir: true,
+    aliquotaIR: 15,
     indexador: "CDI",
     prefixo: "pós",
   });
@@ -35,13 +37,15 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]:
         name === "valorInicial" ||
         name === "aporteMensal" ||
         name === "tempo" ||
-        name === "taxaJuros"
+        name === "taxaJuros" ||
+        name === "aliquotaIR"
           ? Number(value)
           : value,
     }));
@@ -56,6 +60,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
     <Box component="form" onSubmit={handleSubmit} className={styles.formWrapper}>
       <h2 className={styles.title}>Simulador de Investimentos</h2>
 
+      {/* Valor Inicial */}
       <TextField
         label="Valor Inicial (R$)"
         name="valorInicial"
@@ -63,10 +68,10 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.valorInicial}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        InputProps={{ className: styles.inputField }}
+        margin="normal"
       />
 
+      {/* Aporte Mensal */}
       <TextField
         label="Aporte Mensal (R$)"
         name="aporteMensal"
@@ -74,10 +79,10 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.aporteMensal}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        InputProps={{ className: styles.inputField }}
+        margin="normal"
       />
 
+      {/* Tempo */}
       <TextField
         label="Tempo (meses)"
         name="tempo"
@@ -85,10 +90,10 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.tempo}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        InputProps={{ className: styles.inputField }}
+        margin="normal"
       />
 
+      {/* Indexador */}
       <TextField
         select
         label="Indexador"
@@ -96,14 +101,14 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.indexador}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        SelectProps={{ className: styles.inputField }}
+        margin="normal"
       >
         <MenuItem value="CDI">CDI</MenuItem>
         <MenuItem value="SELIC">SELIC</MenuItem>
         <MenuItem value="TAXA">Taxa Fixa</MenuItem>
       </TextField>
 
+      {/* Campo da taxa depende do indexador escolhido */}
       {formData.indexador === "TAXA" && (
         <TextField
           label="Taxa de Juros (% ao ano)"
@@ -112,11 +117,23 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
           value={formData.taxaJuros}
           onChange={handleChange}
           fullWidth
-          InputLabelProps={{ className: styles.inputLabel }}
-          InputProps={{ className: styles.inputField }}
+          margin="normal"
         />
       )}
 
+      {(formData.indexador === "CDI" || formData.indexador === "SELIC") && (
+        <TextField
+          label={`Percentual sobre ${formData.indexador} (%)`}
+          name="taxaJuros"
+          type="number"
+          value={formData.taxaJuros}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+        />
+      )}
+
+      {/* Tipo do Investimento */}
       <TextField
         select
         label="Tipo do Investimento"
@@ -124,8 +141,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.tipo}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        SelectProps={{ className: styles.inputField }}
+        margin="normal"
       >
         <MenuItem value="CDB">CDB</MenuItem>
         <MenuItem value="LCI">LCI</MenuItem>
@@ -134,6 +150,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         <MenuItem value="CRA">CRA</MenuItem>
       </TextField>
 
+      {/* Rentabilidade (pré ou pós) */}
       <TextField
         select
         label="Rentabilidade"
@@ -141,13 +158,13 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         value={formData.prefixo}
         onChange={handleChange}
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        SelectProps={{ className: styles.inputField }}
+        margin="normal"
       >
         <MenuItem value="pré">Pré-fixado</MenuItem>
         <MenuItem value="pós">Pós-fixado</MenuItem>
       </TextField>
 
+      {/* Imposto de Renda */}
       <TextField
         select
         label="Imposto de Renda"
@@ -156,16 +173,28 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         onChange={(e) =>
           setFormData((prev) => ({
             ...prev,
-            ir: e.target.value === "sim",
+            ir: e.target.value === "não",
           }))
         }
         fullWidth
-        InputLabelProps={{ className: styles.inputLabel }}
-        SelectProps={{ className: styles.inputField }}
+        margin="normal"
       >
         <MenuItem value="sim">Sim</MenuItem>
         <MenuItem value="não">Não</MenuItem>
       </TextField>
+
+      {/* Campo da alíquota do IR aparece só se IR = true */}
+      {formData.ir && (
+        <TextField
+          label="Alíquota de IR (%)"
+          name="aliquotaIR"
+          type="number"
+          value={formData.aliquotaIR}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+        />
+      )}
 
       <Button type="submit" className={styles.submitButton}>
         Simular

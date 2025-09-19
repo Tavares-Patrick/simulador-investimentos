@@ -1,0 +1,29 @@
+.card {
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(26, 29, 46, 0.9);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  max-width: 500px;
+  margin: 20px auto;
+  color: #eee;
+}
+
+.title {
+  color: #4f8ef7;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 0 8px #4f8ef7;
+}
+
+.resultRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+.shareButton {
+  margin-top: 20px;
+  background: #4f8ef7 !important;
+  font-weight: bold;
+}
