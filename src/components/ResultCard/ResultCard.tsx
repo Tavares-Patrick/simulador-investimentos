@@ -39,7 +39,12 @@ export default function ResultCard({ data }: Props) {
       </div>
 
       <div className={styles.resultRow}>
-        <span>Total Acumulado:</span>
+        <span>Valor Bruto (sem IR):</span>
+        <strong>{formatCurrency(last.grossTotal)}</strong>
+      </div>
+
+      <div className={styles.resultRow}>
+        <span>Valor Líquido (após IR):</span>
         <strong>{formatCurrency(last.totalAccumulated)}</strong>
       </div>
 

@@ -48,8 +48,6 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <h2 className={styles.title}>Simulador de Investimentos</h2>
-
       {/* Valor inicial */}
       <TextField
         label="Valor Inicial (R$)"

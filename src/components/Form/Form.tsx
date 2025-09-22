@@ -3,21 +3,22 @@
 import React, { useState } from "react";
 import { TextField, MenuItem, Button, Box } from "@mui/material";
 import styles from "./Form.module.css";
+import { InvestmentData } from "@/utils/investment";
 
 interface FormData {
   valorInicial: number;
   aporteMensal: number;
   tempo: number;
-  taxaJuros: number;     // taxa fixa ou valor de percentual do indexador
+  taxaJuros: number;     // taxa fixa ou percentual do indexador
   tipo: string;
   ir: boolean;
   aliquotaIR?: number;   // só aparece se ir === true
-  indexador: string;
+  indexador: "CDI" | "SELIC" | "TAXA";
   prefixo: string;
 }
 
 interface FormProps {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: InvestmentData) => void;
 }
 
 const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
@@ -53,7 +54,19 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    const data: InvestmentData = {
+      valorInicial: formData.valorInicial,
+      aporteMensal: formData.aporteMensal,
+      tempo: formData.tempo,
+      indexador: formData.indexador,
+      percentual: formData.indexador !== "TAXA" ? formData.taxaJuros : undefined,
+      taxaFixa: formData.indexador === "TAXA" ? formData.taxaJuros : undefined,
+      ir: formData.ir,
+      irRate: formData.ir ? formData.aliquotaIR : undefined,
+    };
+
+    onSubmit(data);
   };
 
   return (
@@ -108,8 +121,8 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         <MenuItem value="TAXA">Taxa Fixa</MenuItem>
       </TextField>
 
-      {/* Campo da taxa depende do indexador escolhido */}
-      {formData.indexador === "TAXA" && (
+      {/* Taxa / Percentual */}
+      {formData.indexador === "TAXA" ? (
         <TextField
           label="Taxa de Juros (% ao ano)"
           name="taxaJuros"
@@ -119,9 +132,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
           fullWidth
           margin="normal"
         />
-      )}
-
-      {(formData.indexador === "CDI" || formData.indexador === "SELIC") && (
+      ) : (
         <TextField
           label={`Percentual sobre ${formData.indexador} (%)`}
           name="taxaJuros"
@@ -173,7 +184,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         onChange={(e) =>
           setFormData((prev) => ({
             ...prev,
-            ir: e.target.value === "não",
+            ir: e.target.value === "sim",
           }))
         }
         fullWidth
@@ -183,7 +194,7 @@ const InvestmentForm: React.FC<FormProps> = ({ onSubmit }) => {
         <MenuItem value="não">Não</MenuItem>
       </TextField>
 
-      {/* Campo da alíquota do IR aparece só se IR = true */}
+      {/* Campo da alíquota do IR */}
       {formData.ir && (
         <TextField
           label="Alíquota de IR (%)"

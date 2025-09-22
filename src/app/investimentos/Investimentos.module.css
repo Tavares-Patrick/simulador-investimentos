@@ -3,12 +3,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: url('/images/dark-bg.jpg') no-repeat center center fixed;
+   /* Background image dark mode */
+  background-image: url('/images/chris-briggs-VK7jXtOtEuM-unsplash.jpg');
   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 1;
+  color: #e0e0e0;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 17, 26, 0.7); /* Ajusta a opacidade do overlay */
+  z-index: -1;
 }
 
 .overlay {
-  background: rgba(26, 29, 46, 0.85);
   padding: 40px;
   border-radius: 16px;
   width: 90%;
@@ -24,4 +40,11 @@
   font-size: 2.5rem;
   color: #4f8ef7;
   text-shadow: 0 0 10px #4f8ef7;
+}
+
+.button{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
 }
