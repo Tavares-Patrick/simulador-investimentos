@@ -80,6 +80,6 @@ export function calculateInvestment(data: InvestmentData): InvestmentResult[] {
       });
     }
   }
-
+  
   return results;
 }
